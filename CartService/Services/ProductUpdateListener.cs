@@ -16,7 +16,7 @@ namespace CartService.Services
         }
         public async Task StartListeningAsync()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost", Port = 0 };
+            var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
 
             // Establish connection and channel
             using var connection = await factory.CreateConnectionAsync();
@@ -31,8 +31,8 @@ namespace CartService.Services
 
             // Start consuming
             await channel.BasicConsumeAsync(queue: "ProductUpdates",autoAck:true,consumer:consumer);
-            Console.WriteLine("Listening for Product updates...");
-            Console.ReadLine();
+            //Console.WriteLine("Listening for Product updates...");
+            //Console.ReadLine();
         }
 
         private async Task HandleMessageAsync(object sender, BasicDeliverEventArgs ea)

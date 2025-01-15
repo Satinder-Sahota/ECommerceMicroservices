@@ -9,7 +9,7 @@ namespace ProductService.Services
     {
         public async Task NotifyCartServiceAsync(Product product)
         {
-            var factory = new ConnectionFactory() { HostName="localhost",Port=0};
+            var factory = new ConnectionFactory() { HostName="localhost",Port= 5672 };
             // Create an asynchronous connection
             using var connection = await factory.CreateConnectionAsync();
             // Create a channel asynchronously

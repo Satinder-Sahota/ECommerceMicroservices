@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductService.Data;
 using ProductService.Models;
-
 namespace ProductService.Controllers
 {
     [ApiController]
@@ -10,10 +9,13 @@ namespace ProductService.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductDbContext _context;
+        private readonly Services.ProductService _service;
 
-        public ProductsController(ProductDbContext context)
+        public ProductsController(ProductDbContext context, Services.ProductService service)
         {
             _context = context;
+            _service = service;
+
         }
 
         // GET: api/products
@@ -31,7 +33,7 @@ namespace ProductService.Controllers
             if (product == null)
                 return NotFound();
 
-            return product;
+            return Ok(product);
         }
 
         // POST: api/products
@@ -45,7 +47,7 @@ namespace ProductService.Controllers
 
         // PUT: api/products/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, Product product)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
         {
             if(id!=product.Id)
                 return BadRequest();
@@ -53,6 +55,8 @@ namespace ProductService.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                // Notify CartService about the update
+                await _service.NotifyCartServiceAsync(product);
             }
             catch (DbUpdateConcurrencyException)
             {

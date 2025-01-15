@@ -2,6 +2,7 @@ using CartService.Data;
 using CartService.GraphQL;
 using CartService.GraphQL.Mutations;
 using CartService.GraphQL.Queries;
+using CartService.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,12 @@ builder.Services.AddHttpClient("ProductService", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7018/api/");
 });
+builder.Services.AddSingleton<ProductUpdateListener>();
 var app = builder.Build();
+
+// Start the ProductUpdateListener
+var listner = app.Services.GetRequiredService<ProductUpdateListener>();
+await Task.Run (() => listner.StartListeningAsync());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

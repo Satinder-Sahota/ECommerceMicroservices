@@ -20,7 +20,8 @@ namespace CartService.GraphQL.Mutations
             var response = await client.GetAsync($"products/{input.ProductId}");
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Invalid ProductId");
-            var product = JsonSerializer.Deserialize<Product>(await response.Content.ReadAsStringAsync());
+         
+            var product = JsonSerializer.Deserialize<Product>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (product == null) throw new Exception("Product not found");
             input.Price = product.Price; //Sync price with ProductService
             context.CartItems.Add(input);
