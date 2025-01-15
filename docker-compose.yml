@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  productservice:
+    build:
+      context: .
+      dockerfile: ProductService/Dockerfile
+    ports:
+      - "8082:83" # Map ProductService port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - rabbitmq
+
+  cartservice:
+    build:
+      context: .
+      dockerfile: CartService/Dockerfile
+    ports:
+      - "8080:81" # Map CartService port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672" # RabbitMQ management UI
+      - "5672:5672"   # RabbitMQ message port
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+  db: #persistent volumes set up to retain data when containers are restarted
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:

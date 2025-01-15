@@ -1,0 +1,13 @@
+services:
+  cartservice:
+    volumes:
+      - ./CartService:/app
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - ASPNETCORE_ENVIRONMENT=Development
+  productservice:
+    volumes:
+      - ./ProductService:/app
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - ASPNETCORE_ENVIRONMENT=Development
